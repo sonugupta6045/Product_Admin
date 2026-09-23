@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { Suspense, useState, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { setToken } from '@/lib/axios';
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get('from') ?? '/products';
@@ -148,5 +148,13 @@ export default function LoginPage() {
         </p>
       </div>
     </main>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginContent />
+    </Suspense>
   );
 }
