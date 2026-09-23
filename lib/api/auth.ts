@@ -1,22 +1,37 @@
 /**
  * Auth API — all calls go through the shared Axios instance.
  * Never import axios directly in this file.
+ *
+ * NOTE: DummyJSON changed their auth response from `token` to `accessToken`.
+ * We handle both shapes for forward/backward compatibility.
  */
 
 import api, { setToken } from '@/lib/axios';
-import { User } from '@/types';
+
+interface AuthResponse {
+  id: number;
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  image: string;
+  token?: string;       // legacy field
+  accessToken?: string; // current field
+  refreshToken?: string;
+}
 
 export async function loginApi(
   username: string,
   password: string
-): Promise<User> {
-  const { data } = await api.post<User>('/auth/login', {
+): Promise<AuthResponse> {
+  const { data } = await api.post<AuthResponse>('/auth/login', {
     username,
     password,
     expiresInMins: 60,
   });
-  // Persist token in memory so every subsequent request is authenticated
-  setToken(data.token);
+  // DummyJSON now returns accessToken; fall back to token for any cached version
+  const jwt = data.accessToken ?? data.token ?? '';
+  setToken(jwt);
   return data;
 }
 

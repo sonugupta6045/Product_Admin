@@ -7,7 +7,9 @@ export interface User {
   firstName: string;
   lastName: string;
   image: string;
-  token: string;
+  token?: string;        // legacy — DummyJSON used this field name previously
+  accessToken?: string;  // current — DummyJSON now uses this field name
+  refreshToken?: string;
 }
 
 export interface Review {

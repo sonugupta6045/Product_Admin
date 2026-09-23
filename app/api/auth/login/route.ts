@@ -28,9 +28,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // DummyJSON returns `accessToken` (renamed from `token` in a prior version).
+    // We normalise it to `token` in our response so client code has a stable key.
+    const accessToken = data.accessToken ?? data.token;
+    const normalised = { ...data, token: accessToken };
+
     // Set the token in an HttpOnly cookie readable by middleware
-    const response = NextResponse.json(data, { status: 200 });
-    response.cookies.set('token', data.token, {
+    const response = NextResponse.json(normalised, { status: 200 });
+    response.cookies.set('token', accessToken, {
       httpOnly: true,
       sameSite: 'lax',
       path: '/',

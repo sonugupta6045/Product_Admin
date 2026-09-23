@@ -38,8 +38,9 @@ export default function LoginPage() {
         return;
       }
 
-      // Hydrate the in-memory token so Axios interceptor can use it immediately
-      setToken(data.token);
+      // Hydrate the in-memory token so Axios interceptor can use it immediately.
+      // The Route Handler normalises accessToken → token, but we fall back just in case.
+      setToken(data.token ?? data.accessToken);
       router.push(redirectTo);
     } catch {
       setError('Network error. Please check your connection and try again.');
