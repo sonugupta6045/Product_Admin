@@ -2,12 +2,15 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 /**
- * Middleware — protects all /products routes.
+ * Proxy (formerly middleware) — protects all /products routes.
  * Reads the HttpOnly `token` cookie set by /api/auth/login.
  * If no token is present, redirects to /login.
- * This runs on the server (edge runtime) so there is no client-side bypass.
+ * This runs on the server before any page renders — no client-side bypass.
+ *
+ * Renamed from middleware.ts → proxy.ts per Next.js 16 convention.
+ * See: https://nextjs.org/docs/messages/middleware-to-proxy
  */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const token = request.cookies.get('token')?.value;
 
   if (!token) {
