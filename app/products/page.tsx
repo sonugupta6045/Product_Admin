@@ -102,7 +102,7 @@ function ProductsContent() {
         onRetry={retry}
         skeletonRows={limit}
       >
-        <ProductTable products={products} onDelete={setToDelete} />
+        <ProductTable products={products} onDelete={setToDelete} page={page} limit={limit} />
         <ProductCards products={products} onDelete={setToDelete} />
       </AsyncState>
 

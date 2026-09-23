@@ -7,6 +7,10 @@ import { Product } from '@/types';
 interface ProductTableProps {
   products: Product[];
   onDelete: (product: Product) => void;
+  /** Current page number (1-indexed) — used to compute the correct Sr. No. offset */
+  page: number;
+  /** Page size — used alongside page to compute Sr. No. */
+  limit: number;
 }
 
 function StarRating({ rating }: { rating: number }) {
@@ -26,12 +30,16 @@ function StockBadge({ stock }: { stock: number }) {
   return <span className="badge-green">{stock} in stock</span>;
 }
 
-export default function ProductTable({ products, onDelete }: ProductTableProps) {
+export default function ProductTable({ products, onDelete, page, limit }: ProductTableProps) {
+  // First serial number on this page — e.g. page 2, limit 10 → starts at 11
+  const startIndex = (page - 1) * limit + 1;
+
   return (
     <div className="hidden md:block overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm">
       <table className="min-w-full divide-y divide-gray-100">
         <thead className="bg-gray-50">
           <tr>
+            <th className="table-header-cell w-10 text-center">#</th>
             <th className="table-header-cell w-16">Image</th>
             <th className="table-header-cell">Title</th>
             <th className="table-header-cell">Category</th>
@@ -42,8 +50,12 @@ export default function ProductTable({ products, onDelete }: ProductTableProps) 
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-50">
-          {products.map((product) => (
+          {products.map((product, idx) => (
             <tr key={product.id} className="hover:bg-gray-50/60 transition-colors duration-100">
+              {/* Sr. No. */}
+              <td className="table-cell text-center text-xs font-medium text-gray-400 tabular-nums">
+                {startIndex + idx}
+              </td>
               {/* Thumbnail */}
               <td className="table-cell">
                 <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-gray-100 shrink-0">
